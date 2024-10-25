@@ -12,8 +12,10 @@
 # Error handling:
 #	Handle invalid inputs, missing file...
 
+# TODO - Remove and search for commands
 
-COMMAND_FILE="commands.json"
+# COMMAND_FILE="commands.json"
+COMMAND_FILE="commands.txt"
 
 # Initialize the command file if it doesn't exist
 if [ ! -f "${COMMAND_FILE}" ]; then
@@ -28,18 +30,35 @@ fi
 
 # Function to add a command
 add_command(){
-echo "command structure: cmd description options"
+echo "Create a command name:"
+read command_name
+echo "command directive path options"
 echo "Enter command:"
 read command
+echo "Enter directive:"
+read directive
+echo "Enter path:"
+read path
+echo "Enter options (comma-separted):"
+read cmd_options
 echo "Enter description:"
 read description
-echo "Enter options (comma-separted):"
-read options
 
-# Add command to the JSON file
-jq --arg cmd "$command" --arg desc "$description" --arg opts "$options" \
-'. += [{"command": $cmd, "description": $desc, "options": $opts}]' \
-"$COMMAND_FILE" > tmp.$$.json &&  mv tmp.$$.json "$COMMAND_FILE"
+# Write the command details to the command file
+echo "command name: ${command_name}" >> "$COMMAND_FILE"
+echo "command: $command" >> "$COMMAND_FILE"
+echo "directive: $directive" >> "$COMMAND_FILE"
+echo "path: $path" >> "$COMMAND_FILE"
+echo "options: $cmd_options" >> "$COMMAND_FILE"
+echo "description: $description" >> "$COMMAND_FILE"
+echo "---" >> "$COMMAND_FILE"  # Separator for readability
+
+# BUG: Add command to the JSON file
+# jq --arg cmd "$command" --arg desc "$description" --arg opts "$options" \
+# '. += [{"command": $cmd, "description": $desc, "options": $opts}]' \
+# "$COMMAND_FILE" > tmp.$$.json &&  mv tmp.$$.json "$COMMAND_FILE"
+
+
 
 echo "Command added successfully"
 

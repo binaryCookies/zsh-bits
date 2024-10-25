@@ -1,0 +1,8 @@
+[]
+command name: gh_priv_repo_create
+command: gh
+directive: create
+path: /path/to/root/of/project
+options: --public,--private
+description: blah
+---
