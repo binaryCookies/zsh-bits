@@ -1,0 +1,42 @@
+#!/bin/bash
+
+# Get Quick Stats on Your Project
+# This script provides a quick overview of your project's statistics.
+# It lists the total number of files, directories, lines of code, code size, total commits, and the top contributor.
+# Adjust the BASE_DIR variable and paths accordingly to match your project's structure.
+
+# Usage:
+# 1. Place this script in your project's root directory or adjust the BASE_DIR variable to point to your project's root.
+# 2. Ensure you have the necessary permissions to execute the script: chmod +x project_stats.sh
+# 3. Run the script: ./project_stats.sh
+
+BASE_DIR=".."
+
+# File and directory counts (excluding node_modules and .git)
+total_files=$(find "$BASE_DIR/" -type f \
+-not -path "$BASE_DIR/path/to/node_modules/*" \
+-not -path "$BASE_DIR/.git/*" | wc -l)
+
+total_dirs=$(find "$BASE_DIR" -type d \
+-not -path "$BASE_DIR/path/to/node_modules" \
+-not -path "$BASE_DIR/path/to/node_modules/*" \
+-not -path "$BASE_DIR/.git" \
+-not -path "$BASE_DIR/.git/*" | wc -l)
+
+# Code stats (excluding node_modules and .git)
+lines_of_code=$(find "$BASE_DIR/" -type f \( -name '*.js' -o -name '*.css' -o -name '*.html' \) \
+    -not -path "$BASE_DIR/path/to/node_modules/*" -not -path "$BASE_DIR/.git/*" | xargs wc -l | tail -n 1 | awk '{print $1}')
+code_size=$(du -ch --exclude="$BASE_DIR/path/to/node_modules" --exclude="$BASE_DIR/git" | grep total$)
+
+# Git stats
+commit_count=$(git rev-list --all --count)
+top_contributor=$(git shortlog -s -n | head -n 1 | awk '{$1=""; print $0}')
+
+# Output project stats
+echo "Project Stats:"
+echo "Total Files: $total_files"
+echo "Total Directories: $total_dirs"
+echo "Total Lines of Code: $lines_of_code"
+echo "Total Code Size: $code_size"
+echo "Total Commits: $commit_count"
+echo "Top Contributor: $top_contributor"
